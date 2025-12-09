@@ -1,0 +1,5 @@
+title,price,rating,discount,date,image_url,net_price
+Smartphone X10,1999.99,90.0,10.0,27-11-2025,/img/x10.jpg,1799.99
+Notebook Ultraline,4500.0,96.0,0.0,28-11-2025,/img/ultra.jpg,4500.0
+Fone Bluetooth Pro,549.5,78.0,5.0,28-11-2025,/img/fone.jpg,522.02
+Smartwatch Z,1250.0,100.0,20.0,27-11-2025,/img/watch.jpg,1000.0
