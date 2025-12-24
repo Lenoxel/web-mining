@@ -5,6 +5,7 @@ import nltk
 import emoji
 import pandas as pd
 from pandarallel import pandarallel
+from langdetect import detect, LangDetectException
 
 pd.set_option("display.max_colwidth", None)
 
@@ -206,7 +207,37 @@ def handle_not_english_reviews(df: pd.DataFrame) -> pd.DataFrame:
 
     print(f'{"*" * 10} Handling "not English" reviews{"*" * 10}')
 
-    # Implement logic here
+    def get_language(text):
+        try:
+            if len(str(text)) < 3:
+                return "unknown"
+
+            return detect(str(text))
+        except LangDetectException:
+            return "unknown"
+
+    print("Detecting language...")
+
+    df["lang"] = df["text"].parallel_apply(get_language)
+
+    non_english_count = df[df["lang"] != "en"].shape[0]
+
+    print(f"Number of non-english reviews found: {non_english_count}")
+
+    print("Sample of non-english reviews being dropped:")
+    print(df[df["lang"] != "en"][["text", "lang"]].sample(10))
+
+    print("Dropping non-english reviews...")
+
+    df = df[df["lang"] == "en"].copy()
+
+    df.drop(columns=["lang"], inplace=True)
+
+    print(f"Reviews remaining: {len(df)}")
+
+    print(
+        "\nConclusion: Non-english reviews have been identified and removed from the dataset to ensure consistency in language for further analysis. Besides, although language detection may not be perfect and end up removing english texts (false positives), especially for very short texts, the impact on the overall dataset is expected to be minimal given the relatively small number of non-english reviews detected."
+    )
 
     return df
 
